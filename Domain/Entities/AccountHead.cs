@@ -1,5 +1,4 @@
 ﻿namespace Domain.Entities;
-
 public class AccountHead : BaseEntity
 {
     public string Name { get; set; } = string.Empty;

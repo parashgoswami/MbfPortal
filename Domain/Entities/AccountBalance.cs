@@ -2,6 +2,6 @@
 public class AccountBalance : BaseEntity
 {
     public int AccountHeadId { get; set; }
-    public decimal debitBalance { get; set; }
-    public decimal creditBalance { get; set; }
+    public decimal DebitBalance { get; set; }
+    public decimal CreditBalance { get; set; }
 }

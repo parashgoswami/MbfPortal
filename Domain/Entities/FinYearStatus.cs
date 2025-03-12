@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Domain.Entities;
+﻿namespace Domain.Entities;
 public class FinYearStatus : BaseEntity
 {
     public string FinYear { get; set; } = string.Empty;

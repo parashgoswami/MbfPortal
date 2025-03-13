@@ -10,6 +10,6 @@ public class Member : BaseEntity
     public DateTime? DOS { get; set; }
     public int LocationId { get; set; }
     public decimal Share { get; set; }
-    public bool IsActive { get; set; }
+    public bool IsActive { get; set; } = true;
     public Location? Location { get; set; }
 }

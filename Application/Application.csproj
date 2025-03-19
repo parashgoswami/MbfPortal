@@ -16,4 +16,10 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="AccountHeads\Edit\" />
+    <Folder Include="AccountHeads\Delete\" />
+    <Folder Include="AccountHeads\Get\" />
+  </ItemGroup>
+
 </Project>

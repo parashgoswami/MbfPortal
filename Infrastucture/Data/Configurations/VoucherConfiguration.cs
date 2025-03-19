@@ -27,6 +27,9 @@ public class VoucherConfiguration : BaseEntityConfiguration<Voucher>
 
         builder.Property(v => v.Date)
             .IsRequired();
+        
+        builder.Ignore(v => v.DebitAmt);
+        builder.Ignore(v => v.CreditAmt);
 
         builder.HasMany(v => v.VoucherLines)
             .WithOne(vl => vl.Voucher)

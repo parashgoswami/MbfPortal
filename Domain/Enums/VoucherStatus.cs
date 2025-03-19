@@ -2,7 +2,7 @@
 
 public enum VoucherStatus
 {
-    CREATED = 1,
+    DRAFT = 1,
     POSTED = 2,
-    REVERSED = 3
+    CANCELLED = 3
 }

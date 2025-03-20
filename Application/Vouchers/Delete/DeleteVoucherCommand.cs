@@ -1,5 +1,6 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,7 +24,7 @@ public class DeleteVoucherCommandHandler : IRequestHandler<DeleteVoucherCommand>
     {
         var voucher = await _context.Vouchers
             .Include(v => v.VoucherLines)
-            .FirstOrDefaultAsync(v => v.Id == request.Id, cancellationToken);
+            .FirstOrDefaultAsync(v => v.Id == request.Id);
 
         if (voucher == null)
         {

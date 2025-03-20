@@ -11,7 +11,7 @@ public class GetVoucherPaginationQuery : IRequest<PaginatedList<Voucher>>
     public int PageSize { get; set; } = 10;
 }
 
-public class GetVoucherPaginationQueryHandler : IRequestHandler<GetVouchersQuery, PaginatedList<Voucher>>
+public class GetVoucherPaginationQueryHandler : IRequestHandler<GetVoucherPaginationQuery, PaginatedList<Voucher>>
 {
     private readonly IAppDbContext _context;
 
@@ -20,7 +20,7 @@ public class GetVoucherPaginationQueryHandler : IRequestHandler<GetVouchersQuery
         _context = context;
     }
 
-    public async Task<PaginatedList<Voucher>> Handle(GetVouchersQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedList<Voucher>> Handle(GetVoucherPaginationQuery request, CancellationToken cancellationToken)
     {
         var query = _context.Vouchers
             .Include(v => v.VoucherLines)

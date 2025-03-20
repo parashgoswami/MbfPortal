@@ -15,7 +15,7 @@ public class Voucher : BaseEntity
 
     public void AddVoucherLine(VoucherLine voucherLine)
     {
-        if (Status != VoucherStatus.CREATED)
+        if (Status != VoucherStatus.DRAFT)
         {
             throw new InvalidOperationException("Cannot add lines to a posted or cancelled voucher.");
         }

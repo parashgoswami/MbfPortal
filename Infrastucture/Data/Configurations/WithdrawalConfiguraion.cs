@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastucture.Data.Configurations;
-public class WithdrawalApplicationConfiguraion : BaseEntityConfiguration<WithdrawalApplication>
+public class WithdrawalConfiguraion : BaseEntityConfiguration<Withdrawal>
 {
-    public  override void Configure(EntityTypeBuilder<WithdrawalApplication> builder)
+    public  override void Configure(EntityTypeBuilder<Withdrawal> builder)
         
     {
         base.Configure(builder);
-        builder.ToTable("WithdrawalApplications");
+        builder.ToTable("Withdrawals");
         builder.HasKey(la => la.Id);
 
         builder.Property(la => la.MemberId)
@@ -30,7 +30,7 @@ public class WithdrawalApplicationConfiguraion : BaseEntityConfiguration<Withdra
             .IsRequired();
 
         builder.Property(la => la.Remarks)
-            .HasMaxLength(EntityConstants.DescriptionLength);
+            .HasMaxLength(EntityConstants.RemarksLength);
     }
    
 }

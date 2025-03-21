@@ -9,7 +9,7 @@ public interface IAppDbContext
     DbSet<Location> Locations { get; }
     DbSet<Member> Members { get; }
     DbSet<Voucher> Vouchers { get; }
-    DbSet<LoanApplication> LoanApplications { get; }
-    DbSet<WithdrawalApplication> WithdrawalApplications { get; }
+    DbSet<Loan> Loans { get; }
+    DbSet<Withdrawal> Withdrawals { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

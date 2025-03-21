@@ -1,5 +1,4 @@
 ﻿using Application.Common.Interfaces;
-using Application.Locations.Dtos;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;

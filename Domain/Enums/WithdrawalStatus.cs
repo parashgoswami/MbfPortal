@@ -1,6 +1,6 @@
 ﻿namespace Domain.Enums;
 
-public enum ApplicationStatus
+public enum WithdrawalStatus
 {
     NEW = 1,
     APPROVED = 2,

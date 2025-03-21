@@ -5,12 +5,12 @@ using Domain.Constants;
 
 namespace Infrastucture.Data.Configurations;
 
-public class LoanApplicationConfiguration : BaseEntityConfiguration<LoanApplication>
+public class LoanConfiguration : BaseEntityConfiguration<Loan>
 {
-    public override void Configure(EntityTypeBuilder<LoanApplication> builder)
+    public override void Configure(EntityTypeBuilder<Loan> builder)
     {
         base.Configure(builder);
-        builder.ToTable("LoanApplications");
+        builder.ToTable("Loans");
 
         builder.HasKey(la => la.Id);
 
@@ -31,6 +31,6 @@ public class LoanApplicationConfiguration : BaseEntityConfiguration<LoanApplicat
             .IsRequired();
 
         builder.Property(la => la.Remarks)
-            .HasMaxLength(EntityConstants.DescriptionLength);
+            .HasMaxLength(EntityConstants.RemarksLength);
     }
 }

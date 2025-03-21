@@ -1,27 +1,36 @@
+using Application.AccountHeads.Get;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.AccountHeads.GetById;
 
-public class GetAccountHeadByIdQuery : IRequest<AccountHead>
+public class GetAccountHeadByIdQuery : IRequest<AccountHeadDto>
 {
     public int Id { get; set; }
 }
 
-public class GetAccountHeadByIdQueryHandler : IRequestHandler<GetAccountHeadByIdQuery, AccountHead>
+public class GetAccountHeadByIdQueryHandler : IRequestHandler<GetAccountHeadByIdQuery, AccountHeadDto>
 {
     private readonly IAppDbContext _context;
+    private readonly IMapper _mapper;
 
-    public GetAccountHeadByIdQueryHandler(IAppDbContext context)
+    public GetAccountHeadByIdQueryHandler(IAppDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
-    public async Task<AccountHead> Handle(GetAccountHeadByIdQuery request, CancellationToken cancellationToken)
+    public async Task<AccountHeadDto> Handle(GetAccountHeadByIdQuery request, CancellationToken cancellationToken)
     {
-        var entity = await _context.AccountHeads.FindAsync(request.Id);
+        var entity = await _context.AccountHeads
+            .Where(x => x.Id == request.Id)
+            .ProjectTo<AccountHeadDto>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(cancellationToken);
 
         if (entity == null)
         {
@@ -31,3 +40,5 @@ public class GetAccountHeadByIdQueryHandler : IRequestHandler<GetAccountHeadById
         return entity;
     }
 }
+
+

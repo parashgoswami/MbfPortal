@@ -1,6 +1,6 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
-using Application.Vouchers.Common;
+using Application.Vouchers.Base;
 using Domain.Entities;
 using MediatR;
 

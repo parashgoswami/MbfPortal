@@ -21,8 +21,9 @@
   <ItemGroup>
     <Folder Include="AccountHeads\Edit\" />
     <Folder Include="AccountHeads\Delete\" />
-    <Folder Include="AccountHeads\Get\" />
-    <Folder Include="Withdrawals\" />
+    <Folder Include="Loans\Delete\" />
+    <Folder Include="Loans\Approve\" />
+    <Folder Include="Members\Delete\" />
   </ItemGroup>
 
 </Project>

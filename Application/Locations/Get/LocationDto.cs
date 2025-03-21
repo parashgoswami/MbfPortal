@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Entities;
 
-namespace Application.Locations.Dtos;
+namespace Application.Locations.Get;
 
 public class LocationDto
 {

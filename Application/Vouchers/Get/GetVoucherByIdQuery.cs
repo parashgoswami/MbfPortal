@@ -1,30 +1,37 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Vouchers.Base;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Vouchers.GetById;
 
-public class GetVoucherByIdQuery : IRequest<Voucher>
+public class GetVoucherByIdQuery : IRequest<VoucherDto>
 {
     public int Id { get; set; }
 }
 
-public class GetVoucherByIdQueryHandler : IRequestHandler<GetVoucherByIdQuery, Voucher>
+public class GetVoucherByIdQueryHandler : IRequestHandler<GetVoucherByIdQuery, VoucherDto>
 {
     private readonly IAppDbContext _context;
+    private readonly IMapper _mapper;
 
-    public GetVoucherByIdQueryHandler(IAppDbContext context)
+    public GetVoucherByIdQueryHandler(IAppDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
-    public async Task<Voucher> Handle(GetVoucherByIdQuery request, CancellationToken cancellationToken)
+    public async Task<VoucherDto> Handle(GetVoucherByIdQuery request, CancellationToken cancellationToken)
     {
         var voucher = await _context.Vouchers
             .Include(v => v.VoucherLines)
-            .FirstOrDefaultAsync(v => v.Id == request.Id, cancellationToken);
+            .Where(v => v.Id == request.Id)
+            .ProjectTo<VoucherDto>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(cancellationToken);
 
         if (voucher == null)
         {
@@ -34,4 +41,6 @@ public class GetVoucherByIdQueryHandler : IRequestHandler<GetVoucherByIdQuery, V
         return voucher;
     }
 }
+
+
 

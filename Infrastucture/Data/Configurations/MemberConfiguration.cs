@@ -10,12 +10,16 @@ public class MemberConfiguration : BaseEntityConfiguration<Member>
     public override void Configure(EntityTypeBuilder<Member> builder)
     {
         base.Configure(builder);
-
-        // Table Name
+        
         builder.ToTable("Members");
 
-        // Properties
-        builder.Property(m => m.EmpNo)
+        builder.HasIndex(m => m.EmpNo)
+            .IsUnique();
+
+        builder.HasIndex(m => m.Email)
+            .IsUnique();
+
+        builder.Property(m => m.EmpNo)            
             .IsRequired()
             .HasMaxLength(EntityConstants.EmpNoLength);
 

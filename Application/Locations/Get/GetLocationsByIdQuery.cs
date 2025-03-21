@@ -1,6 +1,6 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
-using Application.Locations.Dtos;
+using Application.Locations.Get;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Entities;
@@ -28,8 +28,9 @@ public class GetLocationByIdQueryHandler : IRequestHandler<GetLocationByIdQuery,
     public async Task<LocationDto> Handle(GetLocationByIdQuery request, CancellationToken cancellationToken)
     {
         var locationDto = await _context.Locations
+            .Where(x => x.Id == request.Id)
             .ProjectTo<LocationDto>(_mapper.ConfigurationProvider)
-            .FirstOrDefaultAsync(i => i.Id == request.Id);
+            .FirstOrDefaultAsync(cancellationToken);
 
         if (locationDto == null)
         {

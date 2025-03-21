@@ -1,7 +1,7 @@
 using Domain.Constants;
 using FluentValidation;
 
-namespace Application.Vouchers.Common;
+namespace Application.Vouchers.Base;
 
 public class BaseVoucherCommandValidator<T> : AbstractValidator<T> where T : BaseVoucherCommand
 {

@@ -12,8 +12,8 @@ public class AppDbContext : IdentityDbContext<AppUser>, IAppDbContext
     public DbSet<Location> Locations => Set<Location>();
     public DbSet<Member> Members => Set<Member>();
     public DbSet<Voucher> Vouchers => Set<Voucher>();
-    public DbSet<LoanApplication> LoanApplications => Set<LoanApplication>();
-    public DbSet<WithdrawalApplication> WithdrawalApplications => Set<WithdrawalApplication>();
+    public DbSet<Loan> Loans => Set<Loan>();
+    public DbSet<Withdrawal> Withdrawals => Set<Withdrawal>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

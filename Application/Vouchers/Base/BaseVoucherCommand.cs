@@ -1,7 +1,7 @@
 using Domain.Enums;
 using MediatR;
 
-namespace Application.Vouchers.Common;
+namespace Application.Vouchers.Base;
 
 public abstract class BaseVoucherCommand : IRequest<int>
 {

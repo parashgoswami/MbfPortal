@@ -8,6 +8,7 @@ public static class EntityConstants
     public const int EmailLength = 80;
     public const int NarrationLength = 200;
     public const int DescriptionLength = 300;
+    public const int RemarksLength = 250;
     public const int VoucherNoLength = 50;
     public const int FinYearLength = 7;
 }

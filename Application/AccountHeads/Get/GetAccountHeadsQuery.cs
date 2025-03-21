@@ -1,25 +1,30 @@
 using Application.Common.Interfaces;
-using Domain.Entities;
+using AutoMapper.QueryableExtensions;
+using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.AccountHeads.Get;
 
-public class GetAccountHeadsQuery : IRequest<List<AccountHead>>
+public class GetAccountHeadsQuery : IRequest<List<AccountHeadDto>>
 {
 }
 
-public class GetAccountHeadsQueryHandler : IRequestHandler<GetAccountHeadsQuery, List<AccountHead>>
+public class GetAccountHeadsQueryHandler : IRequestHandler<GetAccountHeadsQuery, List<AccountHeadDto>>
 {
     private readonly IAppDbContext _context;
+    private readonly IMapper _mapper;
 
-    public GetAccountHeadsQueryHandler(IAppDbContext context)
+    public GetAccountHeadsQueryHandler(IAppDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
-    public async Task<List<AccountHead>> Handle(GetAccountHeadsQuery request, CancellationToken cancellationToken)
+    public async Task<List<AccountHeadDto>> Handle(GetAccountHeadsQuery request, CancellationToken cancellationToken)
     {
-        return await _context.AccountHeads.ToListAsync(cancellationToken);
+        return await _context.AccountHeads
+            .ProjectTo<AccountHeadDto>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
     }
 }

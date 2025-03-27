@@ -11,4 +11,5 @@ public static class EntityConstants
     public const int RemarksLength = 250;
     public const int VoucherNoLength = 50;
     public const int FinYearLength = 7;
+    public const int YearMonthLength = 6;
 }

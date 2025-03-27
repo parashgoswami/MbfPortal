@@ -2,6 +2,7 @@ using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Constants;
 using Domain.Entities;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -65,7 +66,7 @@ public class EditMemberCommandHandler : IRequestHandler<EditMemberCommand>
         _context = context;
     }
 
-    public async Task<Unit> Handle(EditMemberCommand request, CancellationToken cancellationToken)
+    public async Task Handle(EditMemberCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.Members.FindAsync(new object[] { request.Id }, cancellationToken);
 
@@ -97,8 +98,6 @@ public class EditMemberCommandHandler : IRequestHandler<EditMemberCommand>
         entity.Share = request.Share;
 
         await _context.SaveChangesAsync(cancellationToken);
-
-        return Unit.Value;
     }
 }
 

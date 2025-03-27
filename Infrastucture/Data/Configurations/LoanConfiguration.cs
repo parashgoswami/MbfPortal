@@ -10,6 +10,7 @@ public class LoanConfiguration : BaseEntityConfiguration<Loan>
     public override void Configure(EntityTypeBuilder<Loan> builder)
     {
         base.Configure(builder);
+
         builder.ToTable("Loans");
 
         builder.HasKey(la => la.Id);

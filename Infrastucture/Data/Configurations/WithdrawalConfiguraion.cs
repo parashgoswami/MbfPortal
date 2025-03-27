@@ -10,6 +10,7 @@ public class WithdrawalConfiguraion : BaseEntityConfiguration<Withdrawal>
         
     {
         base.Configure(builder);
+
         builder.ToTable("Withdrawals");
         builder.HasKey(la => la.Id);
 

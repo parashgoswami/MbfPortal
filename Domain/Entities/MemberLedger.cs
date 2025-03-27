@@ -3,15 +3,15 @@
 public class MemberLedger : BaseEntity
 {
     public string EmpNo { get; set; } = string.Empty;    
-    public int YearMonth { get; set; }
+    public string YearMonth { get; set; } = string.Empty;
 
     public decimal Deposit { get; set; }
     public decimal Withdrawal { get; private set; }
     public decimal DepositBal { get; private set; }
     public decimal DepositInt { get; private set; }
 
-    public decimal Loan { get; private set; }
     public decimal LoanRepay { get; set; }
+    public decimal Loan { get; private set; }
     public decimal LoanBal { get; private set; }
     public decimal LoanInt { get; private set; }
 

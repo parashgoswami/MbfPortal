@@ -8,6 +8,8 @@ using System.Reflection;
 namespace Infrastucture.Data;
 public class AppDbContext : IdentityDbContext<AppUser>, IAppDbContext
 {
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
     public DbSet<AccountHead> AccountHeads => Set<AccountHead>();
     public DbSet<Location> Locations => Set<Location>();
     public DbSet<Member> Members => Set<Member>();

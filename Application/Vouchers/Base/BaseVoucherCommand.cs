@@ -5,7 +5,6 @@ namespace Application.Vouchers.Base;
 
 public abstract class BaseVoucherCommand : IRequest<int>
 {
-    public string VoucherNo { get; set; } = string.Empty;
     public string FinYear { get; set; } = string.Empty;
     public DateTime Date { get; set; }
     public string Narration { get; set; } = string.Empty;

@@ -22,7 +22,9 @@ public class CreateFinYearValidator : AbstractValidator<CreateFiscalYearCommand>
             .NotEmpty()
                 .WithMessage("Financial year is required.")
             .MaximumLength(EntityConstants.FinYearLength)
-                .WithMessage($"Financial year must not exceed {EntityConstants.FinYearLength} characters.");
+                .WithMessage($"Financial year must not exceed {EntityConstants.FinYearLength} characters.")
+            .Matches(@"^\d{4}-\d{2}$")
+                .WithMessage("Financial year must be in the format xxxx-yy (e.g. 2025-26).");
 
         RuleFor(x => x.DepositInterest)
             .GreaterThan(0).WithMessage("Deposit Interest rate must be greater than 0.");

@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Application.FiscalYears.Commands;
 
-public class EditFinYearCommand : IRequest
+public class EditFiscalYearCommand : IRequest
 {
     public int Id { get; set; }
     public string FinYear { get; set; } = string.Empty;
@@ -15,15 +15,17 @@ public class EditFinYearCommand : IRequest
     public decimal LoanInterest { get; set; }
 }
 
-public class EditFinYearValidator : AbstractValidator<EditFinYearCommand>
+public class EditFiscalYearCommandValidator : AbstractValidator<EditFiscalYearCommand>
 {
-    public EditFinYearValidator()
+    public EditFiscalYearCommandValidator()
     {
         RuleFor(x => x.FinYear)
             .NotEmpty()
                 .WithMessage("Financial year is required.")
             .MaximumLength(EntityConstants.FinYearLength)
-                .WithMessage($"Financial year must not exceed {EntityConstants.FinYearLength} characters.");
+                .WithMessage($"Financial year must not exceed {EntityConstants.FinYearLength} characters.")
+            .Matches(@"^\d{4}-\d{2}$")
+                .WithMessage("Financial year must be in the format xxxx-yy (e.g. 2025-26).");
 
         RuleFor(x => x.DepositInterest)
            .GreaterThan(0).WithMessage("Deposit Interest rate must be greater than 0.");
@@ -33,16 +35,16 @@ public class EditFinYearValidator : AbstractValidator<EditFinYearCommand>
     }
 }
 
-public class EditFinYearCommandHandler : IRequestHandler<EditFinYearCommand>
+public class EditFiscalYearCommandHandler : IRequestHandler<EditFiscalYearCommand>
 {
     private readonly IAppDbContext _context;
 
-    public EditFinYearCommandHandler(IAppDbContext context)
+    public EditFiscalYearCommandHandler(IAppDbContext context)
     {
         _context = context;
     }
 
-    public async Task Handle(EditFinYearCommand request, CancellationToken cancellationToken)
+    public async Task Handle(EditFiscalYearCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.FiscalYears.FindAsync(request.Id);
 

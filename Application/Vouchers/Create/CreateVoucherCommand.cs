@@ -3,6 +3,7 @@ using Application.Common.Interfaces;
 using Application.Vouchers.Base;
 using Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Vouchers.Create;
 
@@ -24,9 +25,10 @@ public class CreateVoucherCommandHandler : IRequestHandler<CreateVoucherCommand,
 
     public async Task<int> Handle(CreateVoucherCommand request, CancellationToken cancellationToken)
     {
+        var voucherNo = await GetVoucherNo(request.FinYear);
         var voucher = new Voucher
         {
-            VoucherNo = request.VoucherNo,
+            VoucherNo = voucherNo,
             FinYear = request.FinYear,
             Date = request.Date,
             Narration = request.Narration,
@@ -46,6 +48,24 @@ public class CreateVoucherCommandHandler : IRequestHandler<CreateVoucherCommand,
         _context.Vouchers.Add(voucher);
         await _context.SaveChangesAsync(cancellationToken);
         return voucher.Id;
+    }
+
+    private async Task<string> GetVoucherNo(string finYear)
+    {
+        var lastVoucher = await _context.Vouchers
+            .Where(v => v.FinYear == finYear)
+            .OrderByDescending(v => v.VoucherNo)
+            .FirstOrDefaultAsync();
+
+        int sequenceNumber = 1;
+        if (lastVoucher != null)
+        {
+            var lastSequence = int.Parse(lastVoucher.VoucherNo.Substring(6));
+            sequenceNumber = lastSequence + 1;
+        }
+
+        var finYearPart = finYear.Substring(2, 2) + finYear.Substring(5, 2);
+        return $"{finYearPart}{sequenceNumber:D6}";
     }
 }
 

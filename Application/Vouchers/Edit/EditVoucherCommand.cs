@@ -42,7 +42,6 @@ public class EditVoucherCommandHandler : IRequestHandler<EditVoucherCommand>
             throw new BadRequestException("Can edit a draft voucher only.");
         }
 
-        voucher.VoucherNo = request.VoucherNo;
         voucher.FinYear = request.FinYear;
         voucher.Date = request.Date;
         voucher.Narration = request.Narration;

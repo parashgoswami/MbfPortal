@@ -7,13 +7,13 @@ public class BaseVoucherCommandValidator<T> : AbstractValidator<T> where T : Bas
 {
     public BaseVoucherCommandValidator()
     {
-        RuleFor(x => x.VoucherNo)
-            .NotEmpty().WithMessage("Voucher number is required.")
-            .MaximumLength(EntityConstants.VoucherNoLength).WithMessage("Voucher number must not exceed 50 characters.");
-
         RuleFor(x => x.FinYear)
-            .NotEmpty().WithMessage("Financial year is required.")
-            .MaximumLength(EntityConstants.FinYearLength).WithMessage("Financial year must not exceed 10 characters.");
+            .NotEmpty()
+                .WithMessage("Financial year is required.")
+            .MaximumLength(EntityConstants.FinYearLength)
+                .WithMessage($"Financial year must not exceed {EntityConstants.FinYearLength} characters.")
+            .Matches(@"^\d{4}-\d{2}$")
+                .WithMessage("Financial year must be in the format xxxx-yy (e.g. 2025-26).");
 
         RuleFor(x => x.Date)
             .NotEmpty().WithMessage("Date is required.");

@@ -1,5 +1,6 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Domain.Constants;
 using Domain.Entities;
 using Domain.Enums;
 using FluentValidation;
@@ -28,10 +29,11 @@ public class ApproveWithdrawalValidator : AbstractValidator<ApproveWithdrawalCom
 public class ApproveWithdrawalCommandHandler : IRequestHandler<ApproveWithdrawalCommand>
 {
     private readonly IAppDbContext _context;
-
-    public ApproveWithdrawalCommandHandler(IAppDbContext context)
+    private readonly ITimeService _timeService;
+    public ApproveWithdrawalCommandHandler(IAppDbContext context, ITimeService timeService)
     {
         _context = context;
+        _timeService = timeService;
     }
 
     public async Task Handle(ApproveWithdrawalCommand request, CancellationToken cancellationToken)
@@ -49,27 +51,33 @@ public class ApproveWithdrawalCommandHandler : IRequestHandler<ApproveWithdrawal
         withdrawal.SanctionDate = request.SanctionDate;
         withdrawal.Status = WithdrawalStatus.APPROVED;
 
-        // TODO: Create Voucher for the sanctioned amount
-        //var voucher = new Voucher
-        //{
-        //    VoucherNo = GenerateVoucherNo(),
-        //    FinYear = GetCurrentFinancialYear(),
-        //    Date = request.SanctionDate,
-        //    Narration = $"Loan sanctioned for Member ID: {withdrawal.MemberId}",
-        //    Status = VoucherStatus.APPROVED
-        //};
+        // Create Voucher for the sanctioned amount
+        var finYear = _timeService.GetFinancialYear(request.SanctionDate);
+        var voucher = new Voucher
+        {
+            FinYear = finYear,
+            Date = request.SanctionDate,
+            Narration = $"Withdrawal sanctioned for Member ID: {withdrawal.MemberId}",
+            Status = VoucherStatus.POSTED
+        };
 
-        //// Add voucher lines (assuming you have predefined account heads for debit and credit)
-        //var debitAccountHeadId = GetDebitAccountHeadId();
-        //var creditAccountHeadId = GetCreditAccountHeadId();
+        // Add voucher lines with predefined account heads for debit and credit
+        var debitAccountHeadId = _context.AccountHeads.Where(a => a.Name == AccountHeadConstants.Withdrawal)
+            .Select(a => a.Id)
+            .FirstOrDefault();
 
-        //voucher.AddVoucherLine(new VoucherLine(debitAccountHeadId, request.SanctionedAmt, 0, "Loan Sanctioned"));
-        //voucher.AddVoucherLine(new VoucherLine(creditAccountHeadId, 0, request.SanctionedAmt, "Loan Sanctioned"));
+        var creditAccountHeadId = _context.AccountHeads.Where(a => a.Name == AccountHeadConstants.Bank)
+            .Select(a => a.Id)
+            .FirstOrDefault();
 
-        //_context.Vouchers.Add(voucher);
+        voucher.AddVoucherLine(new VoucherLine(debitAccountHeadId, request.SanctionedAmt, 0, "Withdrawal by Member"));
+        voucher.AddVoucherLine(new VoucherLine(creditAccountHeadId, 0, request.SanctionedAmt, "Withdrawal by Member"));
 
-
-        // TODO : Update Member's account balance
+        if (voucher.IsBalanced())
+        {
+            _context.Vouchers.Add(voucher);
+            await _context.SaveChangesAsync(cancellationToken); // Save the changes to the repository
+        }
 
         // Save the changes to the repository
         await _context.SaveChangesAsync(cancellationToken);

@@ -1,11 +1,14 @@
 using Application;
+using Application.Common.Interfaces;
 using Infrastucture;
+using Infrastucture.Data;
 using Infrastucture.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.FluentUI.AspNetCore.Components;
 using WebUI.Components;
 using WebUI.Components.Account;
+using WebUI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,23 +25,22 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
-
-builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultScheme = IdentityConstants.ApplicationScheme;
-        options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-    })
-    .AddIdentityCookies();
+builder.Services.AddScoped<IUser, CurrentUser>();
 
 // Email service for Identity
 builder.Services.AddSingleton<IEmailSender<AppUser>, IdentityNoOpEmailSender>();
 
 var app = builder.Build();
 
+// Apply pending migrations and initialize the database
+await app.InitialiseDatabaseAsync();
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
+    //await app.InitialiseDatabaseAsync();
 }
 else
 {

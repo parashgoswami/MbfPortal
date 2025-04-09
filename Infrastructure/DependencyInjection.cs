@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Infrastucture.Data.Interceptors;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Infrastucture;
 public static class DependencyInjection
@@ -16,17 +18,25 @@ public static class DependencyInjection
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? 
             throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-        builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(connectionString));
+        builder.Services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
 
-        builder.Services.AddIdentityCore<AppUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseNpgsql(connectionString));
+
+        builder.Services.AddIdentity<AppUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<AppDbContext>()
+            .AddRoleManager<RoleManager<IdentityRole>>()
             .AddSignInManager<SignInManager<AppUser>>()
             .AddDefaultTokenProviders();
 
         builder.Services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
+        builder.Services.AddScoped<ApplicationDbContextInitialiser>();
+
+        builder.Services.AddTransient<IIdentityService, IdentityService>();
+
 
         builder.Services.AddTransient<IExcelService, ExcelService>();
         builder.Services.AddTransient<ITimeService, TimeService>();
+        builder.Services.AddSingleton(TimeProvider.System);
     }
 }

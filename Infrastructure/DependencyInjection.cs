@@ -23,7 +23,7 @@ public static class DependencyInjection
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(connectionString));
 
-        builder.Services.AddIdentity<AppUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+        builder.Services.AddIdentity<AppUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
             .AddEntityFrameworkStores<AppDbContext>()
             .AddRoleManager<RoleManager<IdentityRole>>()
             .AddSignInManager<SignInManager<AppUser>>()

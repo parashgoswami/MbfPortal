@@ -11,6 +11,7 @@ public class AppDbContext : IdentityDbContext<AppUser>, IAppDbContext
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     public DbSet<AccountHead> AccountHeads => Set<AccountHead>();
+    public DbSet<AccountBalance> AccountBalances => Set<AccountBalance>();
     public DbSet<Location> Locations => Set<Location>();
     public DbSet<Member> Members => Set<Member>();
     public DbSet<MemberLedger> MemberLedgers => Set<MemberLedger>();

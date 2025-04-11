@@ -1,7 +1,9 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Locations.Get;
 using Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Members.Get;
 
@@ -19,11 +21,15 @@ public class GetMemberByIdQueryHandler : IRequestHandler<GetMemberByIdQuery, Mem
     }
     public async Task<MemberDto> Handle(GetMemberByIdQuery request, CancellationToken cancellationToken)
     {
-        var member = await _context.Members.FindAsync(request.Id);
+        var member = await _context.Members
+            .Include(m => m.Location)
+            .FirstOrDefaultAsync(m => m.Id == request.Id);
+
         if (member == null)
         {
             throw new NotFoundException(nameof(Member), request.Id);
         }
+
         return new MemberDto
         {
             Id = member.Id,
@@ -36,7 +42,11 @@ public class GetMemberByIdQueryHandler : IRequestHandler<GetMemberByIdQuery, Mem
             DOS = member.DOS,
             Share = member.Share,
             IsActive = member.IsActive,
-            Location = member.Location
+            Location = new LocationDto
+            {
+                Id = member.LocationId,
+                Name = member.Location?.Name ?? string.Empty
+            }
         };
     }
 }

@@ -35,10 +35,12 @@ public class CreateAccountHeadCommandValidator : AbstractValidator<CreateAccount
 public class CreateAccountHeadCommandHandler : IRequestHandler<CreateAccountHeadCommand, int>
 {
     private readonly IAppDbContext _context;
+    private readonly ITimeService _timeService;
 
-    public CreateAccountHeadCommandHandler(IAppDbContext context)
+    public CreateAccountHeadCommandHandler(IAppDbContext context, ITimeService timeService)
     {
         _context = context;
+        _timeService = timeService;
     }
 
     public async Task<int> Handle(CreateAccountHeadCommand request, CancellationToken cancellationToken)
@@ -55,8 +57,25 @@ public class CreateAccountHeadCommandHandler : IRequestHandler<CreateAccountHead
         {
             throw new BadRequestException("AccountHead already exists.");
         }
-
         _context.AccountHeads.Add(entity);
+
+        var accountHeadId = await _context.AccountHeads
+            .Where(x => x.Name == entity.Name)
+            .Select(x => x.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+        if (accountHeadId != 0)
+        {
+            var accountBalance = new AccountBalance
+            {
+                AccountHeadId = accountHeadId,
+                FinYear = _timeService.GetFinancialYear(DateTime.Today),
+                DebitBalance = 0,
+                CreditBalance = 0
+            };
+
+            _context.AccountBalances.Add(accountBalance);
+        }
+
         await _context.SaveChangesAsync(cancellationToken);
         return entity.Id;
     }

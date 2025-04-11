@@ -6,6 +6,7 @@ namespace Application.Common.Interfaces;
 public interface IAppDbContext
 {
     DbSet<AccountHead> AccountHeads { get; }
+    DbSet<AccountBalance> AccountBalances { get; }
     DbSet<Location> Locations { get; }
     DbSet<Member> Members { get; }
     DbSet<MemberLedger> MemberLedgers { get; }

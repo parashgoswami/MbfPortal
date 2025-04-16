@@ -1,0 +1,110 @@
+﻿@using Application.Members.Get
+
+@attribute [Authorize(Roles = "Administrator")]
+@page "/member"
+@rendermode InteractiveServer
+
+@inject IMediator mediator
+@inject IDialogService dialogService
+
+<h3>Members</h3>
+<FluentButton IconStart="@(new Icons.Regular.Size16.Add())" OnClick="@(() => AddInDialog())">Add New</FluentButton>
+
+<FluentDataGrid Items="@members" RefreshItems="RefreshItemsAsync" Pagination="pagination" Loading="loading" TGridItem="MemberDto" RowSize="@DataGridRowSize.Medium">
+    <PropertyColumn Property="@(c => c.EmpNo)" Title="Employee No" />
+    <PropertyColumn Property="@(c => c.FirstName)" Title="First Name" />
+    <PropertyColumn Property="@(c => c.LastName)" Title="Last Name" />
+    <PropertyColumn Property="@(c => c.Location!.Name)" Title="Location Name" />
+    <TemplateColumn Title="Actions">
+        <FluentButton IconStart="@(new Icons.Regular.Size12.Edit())" OnClick="@(() => EditInDialog(context))" />      
+        <FluentButton IconStart="@(new Icons.Regular.Size12.Delete())" OnClick="@(() => DeleteItem(context))" />
+        <FluentButton IconStart="@(new Icons.Regular.Size16.Glasses())" OnClick="@(() => ShowItem(context))" />
+    </TemplateColumn>
+</FluentDataGrid>
+
+<FluentPaginator State="@pagination" />
+
+@code {
+    IQueryable<MemberDto> members = default!;
+    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+    bool loading = true;
+
+   
+    private async Task AddInDialog()
+    {
+        // DialogParameters<> parameters = new()
+        //     {
+        //         Title = $"Add Member",
+        //         Alignment = HorizontalAlignment.Right,
+        //         PrimaryAction = "Ok",
+        //         SecondaryAction = "Cancel"
+        //     };
+        // var dialog = await dialogService.ShowPanelAsync<EditArtistPanel>(originalItem.DeepCopy(), parameters);
+        // var dialogResult = await dialog.Result;
+        // await HandleEditConcertDialogResult(dialogResult, originalItem);
+    }
+
+    
+    private void EditInDialog(MemberDto memberDto)
+    {
+
+    }
+    private async Task DeleteItem(MemberDto member)
+    {
+    
+       
+        if (member is null)
+        {
+            return;
+        }
+
+        IDialogReference dialog = await dialogService.ShowConfirmationAsync(
+            $"Are you sure to delete '{member.FirstName} {member.LastName}'?",
+            "Yes",
+            "No",
+            "Delete Member?");
+        DialogResult result = await dialog.Result;
+
+       
+        if (result.Cancelled)
+        {
+            return;
+        }
+
+      
+        try
+        {
+            
+        }
+        catch (Exception exc)
+        {
+            string errorMessage = exc.InnerException?.Message ?? exc.Message;
+            await dialogService.ShowErrorAsync("Error", errorMessage);
+        }
+   
+    }
+    private void ShowItem(MemberDto memberDto)
+    {
+
+    }
+    protected async Task RefreshItemsAsync(GridItemsProviderRequest<MemberDto> req)
+    {
+        loading = true;
+        await InvokeAsync(StateHasChanged);
+
+        var query = new GetMemberPaginationQuery
+        {
+            PageNumber = pagination.CurrentPageIndex,
+			PageSize = pagination.ItemsPerPage
+        };
+
+        var result = await mediator.Send(query);
+
+        members = result.AsQueryable();
+
+		await pagination.SetTotalItemCountAsync(result.TotalCount);
+
+		loading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+}
